@@ -1,6 +1,10 @@
 from flask import Flask, render_template
+from database import init_db, seed_db, setup_database
 
 app = Flask(__name__)
+
+# Initialize the database when the app starts
+setup_database()
 
 
 # ------------------------------------------------------------------ #
@@ -33,7 +37,7 @@ def privacy():
 
 
 # ------------------------------------------------------------------ #
-# Placeholder routes — students will implement these                  #
+# Placeholder routes — student will implement these                #
 # ------------------------------------------------------------------ #
 
 @app.route("/logout")
