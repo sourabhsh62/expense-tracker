@@ -1,15 +1,18 @@
 from flask import Flask, render_template
-from database import init_db, seed_db, setup_database
+from database.db import init_db, seed_db, setup_database, create_user
 
+# -------------------------------------------------- #
+# App Initialization
+# -------------------------------------------------- #
 app = Flask(__name__)
 
-# Initialize the database when the app starts
+# Initialize database
 setup_database()
 
 
-# ------------------------------------------------------------------ #
-# Routes                                                              #
-# ------------------------------------------------------------------ #
+# -------------------------------------------------- #
+# Routes
+# -------------------------------------------------- #
 
 @app.route("/")
 def landing():
@@ -36,34 +39,37 @@ def privacy():
     return render_template("privacy.html")
 
 
-# ------------------------------------------------------------------ #
-# Placeholder routes — student will implement these                #
-# ------------------------------------------------------------------ #
+# -------------------------------------------------- #
+# Placeholder Routes (Future Features)
+# -------------------------------------------------- #
 
 @app.route("/logout")
 def logout():
-    return "Logout — coming in Step 3"
+    return "Logout — coming soon"
 
 
 @app.route("/profile")
 def profile():
-    return "Profile page — coming in Step 4"
+    return "Profile page — coming soon"
 
 
 @app.route("/expenses/add")
 def add_expense():
-    return "Add expense — coming in Step 7"
+    return "Add expense — coming soon"
 
 
 @app.route("/expenses/<int:id>/edit")
 def edit_expense(id):
-    return "Edit expense — coming in Step 8"
+    return f"Edit expense {id} — coming soon"
 
 
 @app.route("/expenses/<int:id>/delete")
 def delete_expense(id):
-    return "Delete expense — coming in Step 9"
+    return f"Delete expense {id} — coming soon"
 
 
+# -------------------------------------------------- #
+# Run App
+# -------------------------------------------------- #
 if __name__ == "__main__":
     app.run(debug=True, port=5001)
