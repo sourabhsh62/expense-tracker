@@ -44,10 +44,12 @@ def seed_db():
     conn = get_db()
     cursor = conn.cursor()
 
+    password_hash = generate_password_hash('demo123')
+
     cursor.execute("""
         INSERT OR IGNORE INTO users (username, email, password_hash)
-        VALUES ('demo', 'demo@test.com', 'demo123')
-    """)
+        VALUES ('demo', 'demo@test.com', ?)
+    """, (password_hash,))
 
     conn.commit()
     conn.close()
@@ -72,3 +74,35 @@ def create_user(username, email, password):
     conn.close()
 
     return user_id
+
+
+def get_user_by_email(email):
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT id, username, email, password_hash, created_at
+        FROM users
+        WHERE email = ?
+    """, (email,))
+
+    user = cursor.fetchone()
+    conn.close()
+
+    return user
+
+
+def get_user_by_id(user_id):
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT id, username, email, password_hash, created_at
+        FROM users
+        WHERE id = ?
+    """, (user_id,))
+
+    user = cursor.fetchone()
+    conn.close()
+
+    return user
