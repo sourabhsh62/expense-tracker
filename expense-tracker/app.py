@@ -1,10 +1,12 @@
-from flask import Flask, render_template
-from database.db import init_db, seed_db, setup_database, create_user
+from flask import Flask, render_template, request, redirect, url_for, flash, session
+from database.db import init_db, seed_db, setup_database, create_user, get_user_by_email, get_user_by_id
+from werkzeug.security import check_password_hash
 
 # -------------------------------------------------- #
 # App Initialization
 # -------------------------------------------------- #
 app = Flask(__name__)
+app.secret_key = "spendly-dev-secret-key-change-in-production"
 
 # Initialize database
 setup_database()
@@ -24,8 +26,26 @@ def register():
     return render_template("register.html")
 
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
+    if request.method == "POST":
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "").strip()
+
+        if not email or not password:
+            flash("Please enter both email and password.")
+            return render_template("login.html")
+
+        user = get_user_by_email(email)
+
+        if not user or not check_password_hash(user["password_hash"], password):
+            flash("Invalid email or password.")
+            return render_template("login.html")
+
+        session["user_id"] = user["id"]
+        flash(f"Welcome back, {user['username']}!")
+        return redirect(url_for("profile"))
+
     return render_template("login.html")
 
 
@@ -45,7 +65,9 @@ def privacy():
 
 @app.route("/logout")
 def logout():
-    return "Logout — coming soon"
+    session.clear()
+    flash("You have been logged out.")
+    return redirect(url_for("landing"))
 
 
 @app.route("/profile")
